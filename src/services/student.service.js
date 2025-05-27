@@ -1,9 +1,12 @@
 import Student from "../models/Student.model.js";
+import { config } from "../config/index.js";
+
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 class StudentService {
   async createStudent({ name, email, password }) {
-    const studentExists = await this.checkStudentExists(email);
+    const studentExists = await this.getStudentByEmail(email);
     if (studentExists) {
       throw new Error("Student with this email already exists");
     }
@@ -19,13 +22,39 @@ class StudentService {
     return student;
   }
 
-  async checkStudentExists(email) {
-    const student = await Student.findOne({ email });
-    return student ? true : false;
+  async login({ email, password }) {
+    const student = await this.getStudentByEmail(email);
+    if (!student) {
+      throw new Error("Student not found");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, student.password);
+    if (!isPasswordValid) {
+      throw new Error("Invalid Password");
+    }
+
+    const jwtToken = jwt.sign(
+      {
+        id: student._id,
+        type: "student",
+      },
+      config.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    return jwtToken;
   }
 
   async getStudentByEmail(email) {
-    return await Student.findOne({ email });
+    const student = await Student.findOne({ email });
+    return student ? student : null;
+  }
+
+  async getStudentById(id) {
+    const student = await Student.findById(id);
+    return student ? student : null;
   }
 
   async getAllStudents() {

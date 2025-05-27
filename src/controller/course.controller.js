@@ -6,7 +6,7 @@ class CourseController {
     const { title, description, department } = req.body;
     const adminId = req.admin.id;
 
-    if (!title || !adminId) {
+    if (!title) {
       return res.status(400).json({
         message: "Title and Admin ID are required",
       });

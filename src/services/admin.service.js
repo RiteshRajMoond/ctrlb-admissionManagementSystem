@@ -51,6 +51,11 @@ class AdminService {
     const admin = await Admin.findOne({ email });
     return admin ? admin : null;
   }
+
+  async getAdminById(id) {
+    const admin = await Admin.findById(id);
+    return admin ? admin : null;
+  }
 }
 
 export default new AdminService();

@@ -26,6 +26,14 @@ class CourseService {
     return await Course.findOne({ title });
   }
 
+  async getCourseById(id) {
+    const course = await Course.findById(id).populate(
+      "createdBy",
+      "name email"
+    );
+    return course ? course : null;
+  }
+
   async getAllCourses() {
     return await Course.find().populate("createdBy", "name email");
   }
