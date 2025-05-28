@@ -1,6 +1,7 @@
 import Admission from "../models/Admission.model.js";
 import studentService from "./student.service.js";
 import courseService from "./course.service.js";
+import notificationsService from "./notifications.service.js";
 
 class AdmissionService {
   async applyForCourse({ studentId, courseId }) {
@@ -59,10 +60,22 @@ class AdmissionService {
     return await Admission.find({ course: courseId }).populate("student");
   }
 
-  async updateAdmissionStatus({admissionId, status}) {
-    const admission =  await this.getAdmissionById(admissionId);
+  async updateAdmissionStatus({ admissionId, status }) {
+    const admission = await this.getAdmissionById(admissionId);
+
+    if (admission.status === status) return admission;
     admission.status = status;
     await admission.save();
+
+    if (admission.student?.email && admission.course?.title) {
+      await notificationsService.sendAdmissionStatusEmail({
+        to: admission.student.email,
+        studentName: admission.student.name,
+        courseTitle: admission.course.title,
+        status,
+      });
+    }
+
     return admission;
   }
 
