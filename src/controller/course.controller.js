@@ -6,12 +6,6 @@ class CourseController {
     const { title, description, department } = req.body;
     const adminId = req.admin.id;
 
-    if (!title) {
-      return res.status(400).json({
-        message: "Title and Admin ID are required",
-      });
-    }
-
     const course = await courseService.createCourse({
       title,
       description,

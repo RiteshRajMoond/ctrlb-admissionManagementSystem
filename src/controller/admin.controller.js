@@ -4,9 +4,6 @@ import catchAsync from "../util/catchAsync.js";
 class AdminController {
   signup = catchAsync(async (req, res, next) => {
     const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "all fields are required" });
-    }
 
     const admin = await adminService.createAdmin({ name, email, password });
     res.status(201).json({
@@ -20,9 +17,6 @@ class AdminController {
 
   login = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ message: "all fields are required" });
-    }
 
     const jwtToken = await adminService.login({ email, password });
     res.status(200).json({

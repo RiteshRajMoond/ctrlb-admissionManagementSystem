@@ -4,11 +4,6 @@ import catchAsync from "../util/catchAsync.js";
 class AdmissionController {
   applyForAdmission = catchAsync(async (req, res, next) => {
     const { studentId, courseId } = req.body;
-    if (!studentId || !courseId) {
-      return res.status(400).json({
-        message: "studentId and courseId are required",
-      });
-    }
 
     const admission = await admissionService.applyForCourse({
       studentId,
@@ -36,12 +31,6 @@ class AdmissionController {
   updateAdmissionStatus = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const { status } = req.body;
-
-    if (!["pending", "enrolled", "rejected"].includes(status)) {
-      return res.status(400).json({
-        message: "Invalid status value",
-      });
-    }
 
     const updatedAdmission = await admissionService.updateAdmissionStatus({
       admissionId: id,

@@ -5,10 +5,16 @@ const courseSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
-    description: String,
-    department: String,
+    description: {
+      type: String,
+      required: true,
+    },
+    department: {
+      type: String,
+      required: true,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
