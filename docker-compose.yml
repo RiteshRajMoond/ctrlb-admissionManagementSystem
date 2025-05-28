@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    ports:
+      - "9090:9090"
+    environment:
+      - JWT_SECRET
+      - SMTP_SERVER
+      - SMTP_PORT
+      - BREVO_USERNAME
+      - BREVO_PASSWORD
+    depends_on:
+      - mongo
+    volumes:
+      - .:/usr/src/app
+    command: node src/server.js   
+
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_URI
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+
