@@ -34,8 +34,34 @@ class CourseService {
     return course ? course : null;
   }
 
-  async getAllCourses() {
-    return await Course.find().populate("createdBy", "name email");
+  async getAllCourses({ page = 1, limit = 10, title = "", dept = "" }) {
+    const query = {};
+    if (title) {
+      query.title = { $regex: title, $options: "i" };
+    }
+
+    if (dept) {
+      query.department = { $regex: dept, $options: "i" };
+    }
+
+    const skip = (page - 1) * limit;
+    const courses = await Course.find(query)
+      .populate("createdBy", "name email")
+      .skip(skip)
+      .limit(Number(limit))
+      .lean();
+
+    const totalCourses = await Course.countDocuments(query);
+
+    return {
+      courses,
+      pagination: {
+        totalCourses,
+        currentPage: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(totalCourses / limit),
+      },
+    };
   }
 }
 

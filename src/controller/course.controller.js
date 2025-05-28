@@ -14,17 +14,26 @@ class CourseController {
     });
 
     return res.status(201).json({
-        message: "Course created Successfully",
-        data: course
-    })
+      message: "Course created Successfully",
+      data: course,
+    });
   });
 
   getAllCourses = catchAsync(async (req, res, next) => {
-    const courses = await courseService.getAllCourses();
+    const { page, limit, title, dept } = req.query;
+
+    const allCourses = await courseService.getAllCourses({
+      page: Number(page) || 1,
+      limit: Number(limit) || 10,
+      title: title || "",
+      dept: dept || "",
+    });
+
     return res.status(200).json({
-        data: courses
-    })
-  })
+      message: "Courses fethched",
+      data: allCourses,
+    });
+  });
 }
 
 export const courseController = new CourseController();
