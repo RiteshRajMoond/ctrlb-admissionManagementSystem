@@ -1,5 +1,5 @@
 import express from "express";
-import {admissionController} from "../controller/admission.controller.js";
+import { admissionController } from "../controller/admission.controller.js";
 import studentAuthMiddleware from "../middleware/studentAuth.middleware.js";
 import adminAuthMiddleware from "../middleware/adminAuth.middleware.js";
 
@@ -28,6 +28,5 @@ router.put(
   adminAuthMiddleware,
   admissionController.updateAdmissionStatus
 );
-
 
 export default router;
